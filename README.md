@@ -1,1 +1,1 @@
-# GPUCalculator
+# GPACalculator
