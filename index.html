@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GPA & CGPA Calculator</title>
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg,#667eea,#764ba2);
+        color:#333;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        margin:0;
+    }
+    .container{
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        width:350px;
+        box-shadow:0 8px 20px rgba(0,0,0,0.2);
+        text-align:center;
+    }
+    h2{
+        margin-bottom:10px;
+    }
+    input{
+        width:80px;
+        padding:8px;
+        margin:5px;
+        border-radius:6px;
+        border:1px solid #ccc;
+        text-align:center;
+    }
+    button{
+        margin-top:10px;
+        padding:10px 18px;
+        border:none;
+        border-radius:8px;
+        background:#667eea;
+        color:white;
+        font-size:16px;
+        cursor:pointer;
+    }
+    button:hover{
+        background:#5a67d8;
+    }
+    .result{
+        margin-top:15px;
+        font-size:18px;
+        font-weight:bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>GPA Calculator</h2>
+    <div id="subjects"></div>
+    <button onclick="addSubject()">Add Subject</button><br>
+    <button onclick="calculateGPA()">Calculate GPA</button>
+    <div class="result" id="gpaResult"></div>
+
+    <hr>
+
+    <h2>CGPA Calculator</h2>
+    <input type="number" id="prevCgpa" placeholder="Prev CGPA" step="0.01">
+    <input type="number" id="semCount" placeholder="Semesters">
+    <br>
+    <button onclick="calculateCGPA()">Calculate CGPA</button>
+    <div class="result" id="cgpaResult"></div>
+</div>
+
+<script>
+function addSubject(){
+    const div=document.createElement("div");
+    div.innerHTML=`
+        <input type="number" placeholder="Grade" step="0.01">
+        <input type="number" placeholder="Credits">
+    `;
+    document.getElementById("subjects").appendChild(div);
+}
+
+function calculateGPA(){
+    const rows=document.querySelectorAll("#subjects div");
+    let totalPoints=0;
+    let totalCredits=0;
+
+    rows.forEach(row=>{
+        const grade=row.children[0].value;
+        const credit=row.children[1].value;
+
+        if(grade && credit){
+            totalPoints+=grade*credit;
+            totalCredits+=parseFloat(credit);
+        }
+    });
+
+    if(totalCredits===0){
+        document.getElementById("gpaResult").innerText="Enter values!";
+        return;
+    }
+
+    const gpa=(totalPoints/totalCredits).toFixed(2);
+    document.getElementById("gpaResult").innerText="GPA = "+gpa;
+}
+
+function calculateCGPA(){
+    const prev=parseFloat(document.getElementById("prevCgpa").value);
+    const sem=parseFloat(document.getElementById("semCount").value);
+    const gpaText=document.getElementById("gpaResult").innerText;
+
+    if(!gpaText.includes("=") || !prev || !sem){
+        document.getElementById("cgpaResult").innerText="Enter all values!";
+        return;
+    }
+
+    const currentGPA=parseFloat(gpaText.split("=")[1]);
+    const cgpa=((prev*(sem-1))+currentGPA)/sem;
+    document.getElementById("cgpaResult").innerText="CGPA = "+cgpa.toFixed(2);
+}
+
+// start with 3 subjects by default
+for(let i=0;i<3;i++) addSubject();
+</script>
+
+</body>
+</html>
